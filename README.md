@@ -1,5 +1,7 @@
-How to use Karver against Docker
---------------------------------
+How to use Karver from a Docker container
+-----------------------------------------
+
+Run Karver (https://github.com/karver/karver) from and against a Docker container
 
 ```
 $ docker run -v /target-path --name="target-container" busybox mkdir /target-path/foo
