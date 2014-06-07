@@ -10,6 +10,6 @@ WORKDIR    /gopath/src/karver
 RUN        go get
 RUN        go install karver
 
-CMD        ["--migrations", "/migrations", "--target", "/target", "run"]
+CMD        ["--target", "/target", "run"]
 
-ENTRYPOINT ["/gopath/bin/karver"]
+ENTRYPOINT ["/gopath/bin/karver", "--migrations", "/migrations"]
