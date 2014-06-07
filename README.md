@@ -1,30 +1,27 @@
-How to use Karver from a Docker container
------------------------------------------
+### Create a Karver container with the needed migrations
+```
+$ ls custom_karver_container/
+Dockerfile    migrations/
 
-Run Karver (https://github.com/karver/karver) from and against a Docker container
+$ cat Dockerfile
+FROM karver/karver
+
+ADD ./migrations/20140605050125_foo_to_bar.sh /migrations/
+
+RUN chmod +x /migrations/*
+
+$ docker build -t="custom_karver_migrations" .
+```
+
+
+### Run you custom Karver image against a Docker container
 
 ```
 $ docker run -v /target-path --name="target-container" busybox mkdir /target-path/foo
 
-$ docker run --volumes-from target-container busybox ls /target-path
-foo
 
-$ mkdir migrations
-$ docker run -v `pwd`/migrations:/migrations karver/karver --migrations /migrations create 'foo to bar'
-New migration: /migrations/20140605050125_foo_to_bar.sh
-
-$ cat > migrations/20140605050125_foo_to_bar.sh << EOF
-#!/bin/bash
-TARGET=\$1
-
-mv \$TARGET/foo \$TARGET/bar
-EOF
-
-$ docker run -v `pwd`/migrations:/migrations --volumes-from target-container karver/karver --migrations /migrations --target /target-path run
+$ docker run --volumes-from target-container custom_karver_migrations --target /target-path run
 2014/06/05 05:05:11 Karving /target-path...
 2014/06/05 05:05:11 Running migration 20140605050125_foo_to_bar.sh...
 2014/06/05 05:05:11 /target-path has been karved. :D
-
-$ docker run --volumes-from target-container busybox ls /target-path
-bar
 ```
